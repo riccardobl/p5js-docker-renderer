@@ -21,6 +21,6 @@ jobs:
 
       - name: Deploy
         run: |
-          docker login ${{ secrets.SCALEWAY_REGISTRY }} -u anyuser -p ${{ secrets.SCALEWAY_TOKEN }}`
+          docker login ${{ secrets.SCALEWAY_REGISTRY }} -u anyuser -p ${{ secrets.SCALEWAY_TOKEN }}
           docker tag p5jsrenderer:latest ${{ secrets.SCALEWAY_REGISTRY }}/${{ secrets.SCALEWAY_NAMESPACE }}/p5jsrenderer:latest
           docker push ${{ secrets.SCALEWAY_REGISTRY }}/${{ secrets.SCALEWAY_NAMESPACE }}/p5jsrenderer:latest
