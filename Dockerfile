@@ -41,7 +41,7 @@ RUN npm ci --only=production
 COPY *.js ./
 COPY renderer ./renderer
 ADD renderer/*.html ./renderer
-ADD https://github.com/processing/p5.js/releases/download/1.0.0/p5.js  ./renderer/p5.js
+ADD renderer/*.js ./renderer
 RUN mkdir -p ./workdir
 
 RUN chown -Rf nonroot:nonroot /app
