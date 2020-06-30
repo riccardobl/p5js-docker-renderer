@@ -1,0 +1,7 @@
+#!/bin/bash
+
+
+# export DOCKER_SERVER="" # Run on the host machine, without docker
+# export DOCKER_SERVER="local" # Run on the local docker installation
+# export DOCKER_SERVER="Xyz" # Run on the specified docker server (configured in docker-machine)
+export DOCKER_SERVER=""

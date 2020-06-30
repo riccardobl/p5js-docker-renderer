@@ -1,0 +1,4 @@
+node_modules
+run.config.sh
+workdir
+renderer/p5.js

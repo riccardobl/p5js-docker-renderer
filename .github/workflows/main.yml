@@ -1,0 +1,26 @@
+
+name: Build
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04    
+    steps:
+
+      - name: Clone repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Build
+        run: |
+          docker build . --tag p5jsrenderer 
+
+      - name: Deploy
+        run: |
+          docker login ${{ secrets.SCALEWAY_REGISTRY }} -u anyuser -p ${{ secrets.SCALEWAY_TOKEN }}`
+          docker tag p5jsrenderer:latest ${{ secrets.SCALEWAY_REGISTRY }}/${{ secrets.SCALEWAY_NAMESPACE }}/p5jsrenderer:latest
+          docker push ${{ secrets.SCALEWAY_REGISTRY }}/${{ secrets.SCALEWAY_NAMESPACE }}/p5jsrenderer:latest
