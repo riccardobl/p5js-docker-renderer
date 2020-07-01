@@ -96,7 +96,8 @@ async function processCliReq(renderer,queue,argv){
     code=await parseCode(code);
 
     console.log("Render", code, "in", outfile, "with timeout", timeout);
-
+    
+    renderer.start();
     queue.start();
 
     const promise = new Promise(function (resolve, reject) {
@@ -121,6 +122,7 @@ async function processCliReq(renderer,queue,argv){
         console.error(e);
     }
 
+    await renderer.stop();
     await queue.stop();
 
     process.exit(0);    
@@ -153,7 +155,11 @@ async function processHttpReq(enderer,queue,req,res){
         code=await parseCode(code);
         format = format.toUpperCase();
 
+        format=format.split("?")[0]; // remove query
+
         console.log("Render sketch", code, "\nwith format", format);
+
+
 
         queue.enqueue(
             code,
@@ -204,9 +210,11 @@ async function main() {
         const server = Http.createServer((req, res) =>    processHttpReq(renderer,queue,req,res));
     
         queue.start();
-    
+        renderer.start();
+
         process.on('SIGINT', function () {
             queue.stop();
+            renderer.stop();
             server.close();
             process.exit(0);
         });

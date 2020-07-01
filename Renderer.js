@@ -10,18 +10,29 @@ module.exports=class Renderer{
         this.RENDER_ID=0;
         this.WORKDIR=Path.resolve(workdir);
         this.RENDERERDIR=Path.resolve(rendererDir);
+        this._browser=null;
         this._tmpServers={};
     }
 
-    async _createFileSrv(path){
-        const fileSrv = new Static.Server(path);
-        const tmpServer = Http.createServer((req, res) => fileSrv.serve(req, res));
-
-        await tmpServer.listen(null, "127.0.0.1");
-        console.log("Start tmp http server" + tmpServer.address().address,tmpServer.address().port);
-
-        this._tmpServers[path]=tmpServer;
-        return  "http://" + tmpServer.address().address + ":" + tmpServer.address().port + "/index.html";
+     _createFileSrv(path){
+         return new Promise((success,reject)=>{
+            const fileSrv = new Static.Server(path);
+            const tmpServer = Http.createServer((req, res) => fileSrv.serve(req, res));
+    
+            tmpServer.listen(null, "127.0.0.1",(error)=>{
+                if(error){
+                    console.error(error);
+                    reject(error);
+                }else{
+                    console.log("Start tmp http server" + tmpServer.address().address,tmpServer.address().port);
+        
+                    this._tmpServers[path]=tmpServer;
+                    success( "http://" + tmpServer.address().address + ":" + tmpServer.address().port + "/index.html");
+                }
+            });
+           
+         });
+   
     }
 
     async _killFileSrv(path){
@@ -31,18 +42,34 @@ module.exports=class Renderer{
             delete this._tmpServers[path];
         }
     }
+
+    async start(){
+        if(!this._browser){
+            this._browser=await Puppeteer.launch({
+                headless: true,
+                args: [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox']
+            });
+        }
+
+    }
+    async stop(){
+        if(this._browser){
+            await this._browser.close();
+            this._browser=null;
+        }
+    }
     async  _browserRender(url,dest,timeout,log){
+        if(!this._browser) return undefined;
+
         console.log("Render",url);
 
         log.push("Renderer started "+new Date().toString());
         
-        const browser = await Puppeteer.launch({
-            headless: true,
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox']
-        });
 
+        let browser = this._browser;
+       
         try{
             let DONE=false;
 
@@ -55,7 +82,7 @@ module.exports=class Renderer{
                 log.push("Timeout, kill renderer "+new Date().toString());
 
                 await page.close();
-                await browser.close();
+                // await browser.close();
             })();
 
             page.on('console', msg => log.push(msg.text()));
@@ -78,7 +105,7 @@ module.exports=class Renderer{
             
             DONE=true;
         }finally{
-            await browser.close();
+            // await browser.close();
 
         }
         console.log("Rendered in",dest);
