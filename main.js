@@ -103,8 +103,8 @@ async function processCliReq(renderer,queue,argv){
 
     console.log("Render", code, "in", outfile, "with timeout", timeout);
     
-    renderer.start();
-    queue.start();
+    await renderer.start();
+    await queue.start();
 
     const promise = new Promise(function (resolve, reject) {
         queue.enqueue(
@@ -215,8 +215,8 @@ async function main() {
     } else {
         const server = Http.createServer((req, res) =>    processHttpReq(renderer,queue,req,res));
     
-        queue.start();
-        renderer.start();
+        await queue.start();
+        await renderer.start();
 
         process.on('SIGINT', function () {
             queue.stop();
