@@ -8,8 +8,6 @@ RUN apt install -y  build-essential nodejs npm
 
 RUN node -v
 
-
-
 RUN add-apt-repository -y ppa:oibaf/graphics-drivers && \
 apt-get update && \
 apt-get upgrade -y &&\
@@ -29,10 +27,7 @@ libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-r
 
 RUN useradd --uid  1000 --system --no-create-home  nonroot
 
-
 RUN mkdir -p /app
-RUN chown -Rvf 1000:1000 /app
-RUN chmod -Rvf 777 /app
 
 WORKDIR /app
 
@@ -42,11 +37,9 @@ COPY *.js ./
 COPY renderer ./renderer
 ADD renderer/*.html ./renderer
 ADD renderer/*.js ./renderer
-RUN mkdir -p ./workdir
 
 RUN chown -Rf nonroot:nonroot /app
 
-RUN ls -l .
 USER nonroot
 
 

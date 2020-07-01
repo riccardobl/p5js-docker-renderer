@@ -5,10 +5,12 @@ const beautify = require('js-beautify').js;
 const fetch = require('node-fetch');
 const Http = require("http");
 const atob = require("atob");
+const Path=require("path");
+const Os=require("os");
 
 const Settings = {
-    WORKDIR: "./workdir",
-    RENDERERDIR: "./renderer",
+    WORKDIR: Fs.mkdtempSync(Path.join(Os.tmpdir(),"p5jsr-")),
+    RENDERERDIR: Path.join(__dirname ,"renderer"),
     PORT: 8080,
     TIMEOUT:5000
 }
@@ -18,6 +20,7 @@ for (let k in Settings) {
         console.log("Set", k, "from env vars");
         Settings[k] = process.env[k];
     }
+    console.log("Use setting",k,Settings[k]);
 }
 
 function getArgs(){
@@ -69,10 +72,13 @@ async function processCliReq(renderer,queue,argv){
     if( argv["help"]){
         console.info("Usage: nodejs main.js [args]");
         console.info("  Args:");
-        console.info("      --sketch CODE");
-        console.info("      --sketch b64:B64_CODE");
-        console.info("      --sketch url:REMOTE_CODE");
+        console.info("      --sketch JAVASCRIPT_CODE");
+        console.info("      --sketch b64:CODE_ENCODED_IN_BASE64");
+        console.info("      --sketch url:http://REMOTE_FILE.js");
         console.info("      --sketch FILE.js");
+        console.info("      --out outputFile.png  : Output file. Optional, default is ./out.png");
+        console.info("      --timeout 5000  : Timeout in ms. Optional, default is 5000");
+        
 
         return;
     }
