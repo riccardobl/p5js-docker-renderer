@@ -11,7 +11,6 @@
 
 
     <style type="text/css" media="screen">
-    #p5r{}
         #p5r #p5editor {
             position: absolute;
             top: 0;
@@ -36,6 +35,8 @@
             font-size: 1rem;
 
         }
+
+    
         #p5r #result{
             position:absolute;
             right:0;
@@ -68,12 +69,12 @@
             height:32px;
             position:absolute;
             z-index:999;
-            bottom:0;
             right:0;
             background-repeat: no-repeat;
             background-position: center;
             background-image: url("workerOffline.png");
- 
+            bottom:1rem;
+
 
         }
         #p5r #result a{
@@ -150,7 +151,9 @@ function draw() {
             <img src="" />
             <a href=""></a>
         </div>
-        <div id="desc">Checkout the worker @  <a href="https://github.com/riccardobl/p5jsrenderer">riccardobl/p5jsrenderer</a></div>
+        <div id="desc">
+           A docker container to render p5js sketches - Check out @  <a href="https://github.com/riccardobl/p5js-docker-renderer/">riccardobl/p5js-docker-renderer</a>
+        </div>
 
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.js"
