@@ -4,6 +4,7 @@ const RenderQueue = require("./RenderQueue.js");
 const beautify = require('js-beautify').js;
 const fetch = require('node-fetch');
 const Http = require("http");
+const atob = require("atob");
 
 const Settings = {
     WORKDIR: "./workdir",
