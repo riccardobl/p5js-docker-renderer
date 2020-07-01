@@ -24,7 +24,7 @@ module.exports=class RenderQueue{
             const e = this._queue.shift();
             if (!e) break;    
             console.log("Render!");
-            await this._renderer.render(
+            this._renderer.render(
                 e.code,
                 e.timeout,
                 e.callback,
@@ -33,7 +33,7 @@ module.exports=class RenderQueue{
         }
         setTimeout(()=>{
             this._run();
-        }, 500);
+        }, 10);
     }
     async start(){
         console.log("Start render queue");
