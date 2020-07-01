@@ -1,0 +1,209 @@
+<html>
+
+<head>
+    <title>P5js Docker Renderer</title>
+</head>
+
+<body>
+    <script>
+                const WORKER_URL = "https://frk07jjjdrk6-p5jsrenderer.functions.fnc.fr-par.scw.cloud/";
+    </script>
+
+
+    <style type="text/css" media="screen">
+    #p5r{}
+        #p5r #p5editor {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            width:50%;
+
+        }
+
+        #p5r #desc{
+            position:absolute;
+            bottom:0;
+            left:0;
+            width:100%;
+            text-align: center;
+            z-index:99;
+            background-color:#a7d129;
+            color:#222;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 1rem;
+
+        }
+        #p5r #result{
+            position:absolute;
+            right:0;
+            top:0;
+            width:50%;
+            height:100%;
+            overflow:hidden;
+            word-wrap: break-word;
+            text-align: center;
+ 
+        }
+        #p5r #result img.loading{
+            width:100%;
+            height:100%;
+            background-image: url('loading.gif');
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        #p5r #result img{
+            max-width: 100%;
+            max-height:95vh;
+            margin:auto;
+            margin-top:5vh;
+ 
+
+        }
+
+        #p5r img#workerStatus{
+            width:185px;
+            height:32px;
+            position:absolute;
+            z-index:999;
+            bottom:0;
+            right:0;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-image: url("workerOffline.png");
+ 
+
+        }
+        #p5r #result a{
+            position: absolute;
+            bottom:0;
+            display:block;
+            width:100%;
+            color:#a7d129;
+            font-weight: bold;
+            font-family: monospace;
+            font-size:0.8rem;
+            text-shadow:
+                -1px -1px 0 #000,  
+                    1px -1px 0 #000,
+                    -1px 1px 0 #000,
+                    1px 1px 0 #000;    
+         }
+
+        #p5r button:hover{
+            background:#81a11f;
+
+        }
+        #p5r button {
+            all:unset;
+            cursor: pointer;
+            text-align: center;
+            display:block;
+            background:#a7d129;
+            border:0.15rem solid #222;
+            font-size:1.2rem;
+            font-weight: bold;
+            color:#222;
+            border-radius: 0.3rem;;
+            position: absolute;
+            top: 0;
+            right: 0;
+            height:5vh;
+            width:50%;
+            z-index:99;
+            
+        }
+    </style>
+
+    <div id="p5r">
+        <div id="p5editor">
+function setup() {
+  createCanvas(512, 512);
+}
+
+function draw() {
+  const fg = color(167, 209, 41);
+  const bg = color(0);
+  bg.setAlpha(0);
+  const border = color(111, 138, 30);
+  stroke(border);
+  strokeWeight(3);
+  background(bg);
+  fill(fg);
+  circle(width / 2, height / 2, width - 60);
+  fill(bg);
+  erase();
+  circle(width / 2, height / 2, width - 60 * 2.2);
+  noErase();
+  noFill();
+  circle(width / 2, height / 2, width - 60 * 2.2);
+  fill(fg);
+  circle(width / 2, height / 2, width - 60 * 3.5);
+}
+        </div>
+        <button>Render!</button>
+        <img id="workerStatus" />
+
+        <div id="result">
+            <img src="" />
+            <a href=""></a>
+        </div>
+        <div id="desc">Checkout the worker @  <a href="https://github.com/riccardobl/p5jsrenderer">riccardobl/p5jsrenderer</a></div>
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.js"
+        integrity="sha256-Kr5Mbwq/xwJYw6XU4NR519/iosGvECYMyMU8IZ/rQok=" crossorigin="anonymous"></script>
+    <script>
+
+        function render() {
+            const editor = ace.edit("p5editor");
+
+            let code = editor.getValue();
+            code = "!b64:" + btoa(code) + "!.png";
+
+            console.log("Render", code);
+
+            document.querySelector("#p5r #result img").src ="";
+            document.querySelector("#p5r #result img").classList.add("loading");
+            setTimeout(function(){
+                document.querySelector("#p5r #result img").src =WORKER_URL + code;
+            },100);
+            document.querySelector("#p5r #result a").href = WORKER_URL + code;
+            document.querySelector("#p5r #result a").innerHTML = WORKER_URL + code;
+        }
+
+
+        window.addEventListener("load", function () {
+
+            let WCHECK_ID=0;
+            function checkWorker(){
+                document.querySelector("#p5r img#workerStatus").src = WORKER_URL +
+"!b64:ZnVuY3Rpb24gc2V0dXAoKSB7CiAgICBjcmVhdGVDYW52YXMoMTg1LCAzMik7ICAKICB9CiAgCiAgCiAgZnVuY3Rpb24gZHJhdygpIHsKICAgIGJhY2tncm91bmQoMTY3LCAyMDksIDQxKTsKICAgIHRleHRTaXplKDIwKTsKICAgIHRleHQoJ1dvcmtlcjogT25saW5lJywgMjAsIDIyKTsKICB9!.png"
+                +"?="+(WCHECK_ID++);
+            }
+            checkWorker();
+            setInterval(checkWorker,10*60000);
+
+            const editor = ace.edit("p5editor");
+            editor.setOption("showPrintMargin", false)
+            editor.setTheme("ace/theme/vibrant_ink");
+            editor.setFontSize(20);
+            editor.session.setMode("ace/mode/javascript");
+            console.log("Onload");
+            document.querySelector("#p5r button").addEventListener("click", render);
+            document.querySelector("#p5r #result img").addEventListener("load",(ev)=>{
+                
+                ev.target.classList.remove("loading");
+            })
+
+            render();
+        });
+
+
+
+    </script>
+</body>
+
+</html>
