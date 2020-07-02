@@ -43,4 +43,4 @@ RUN chown -Rf nonroot:nonroot /app
 USER nonroot
 
 
-ENTRYPOINT [ "node","main.js" ] 
+ENTRYPOINT [ "node"," /app/main.js" ] 
