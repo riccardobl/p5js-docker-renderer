@@ -6,7 +6,7 @@
   "dependencies": {
     "atob": "^2.1.2",
     "js-beautify": "^1.11.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "node-static": "^0.7.11",
     "puppeteer": "^4.0.1"
   },
